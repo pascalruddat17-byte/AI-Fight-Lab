@@ -1,67 +1,31 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>AI Fight Lab</title><style>*{box-sizing:border-box}body{margin:0;background:#0d1118;color:#eef4ff;font-family:system-ui,Arial;overflow:hidden}#top{height:72px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#151b25;border-bottom:1px solid #263143}.name{font-weight:800}.blue{color:#4ba3ff}.red{color:#ff5252}#stats{text-align:center;font-size:13px;color:#aebbd0}canvas{display:block;width:100vw;height:calc(100dvh - 148px);background:radial-gradient(circle at center,#202a38,#111721)}#bottom{height:76px;position:relative;z-index:5;padding-bottom:max(8px,env(safe-area-inset-bottom));background:#151b25;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #263143}button{border:0;border-radius:12px;padding:11px 17px;background:#263143;color:white;font-weight:750}button.primary{background:#287cff}</style></head><body><div id="top"><div><div class="name blue">BLAU</div><div id="bs">Siege 0</div></div><div id="stats">Generation 1<br>KI lernt…</div><div style="text-align:right"><div class="name red">ROT</div><div id="rs">Siege 0</div></div></div><canvas id="c"></canvas><div id="bottom"><button id="speed">Tempo ×1</button><button class="primary" id="reset">Neu starten</button></div><script>
-const c=document.querySelector('#c'),x=c.getContext('2d'); let W,H,gen=1,bwins=0,rwins=0,speed=1;
-function resize(){W=c.width=innerWidth*devicePixelRatio;H=c.height=(innerHeight-148)*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);W=innerWidth;H=innerHeight-148} addEventListener('resize',resize);resize();
-const rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const baseBrain={aggression:.55,strafe:.5,reach:.92,dodge:.4,block:.5,flank:.5,stunSkill:.5,shieldDiscipline:.5,backstab:.5};
-function bot(team){return {team,x:team==='b'?W*.28:W*.72,y:H*.5,a:team==='b'?0:Math.PI,hp:100,cool:0,stun:0,block:false,blockCd:0,score:0,actions:{hits:0,blocks:0,backstabs:0,wastedBlocks:0},brain:{...baseBrain},vx:0,vy:0}}
-let B=bot('b'),R=bot('r'),roundOver=0,roundTimer=null;
-function resetRound(winner){if(winner){winner==='b'?bwins++:rwins++; learn(B,winner==='b');learn(R,winner==='r');gen++;document.querySelector('#bs').textContent='Siege '+bwins;document.querySelector('#rs').textContent='Siege '+rwins;document.querySelector('#stats').innerHTML='Generation '+gen+'<br>Strategien werden angepasst';}B=botFrom(B,'b');R=botFrom(R,'r');roundOver=0}
-function botFrom(old,t){let n=bot(t); if(old)n.brain={...old.brain}; return n}
-function learn(q,won){
- // Jede KI lernt ausschließlich aus ihrem eigenen Reward. Exploration verhindert Festfahren.
- const reward=clamp(q.score/8,-1.5,1.5), explore=.045, lr=.022;
- const a=q.actions||{};
- q.brain.aggression=clamp(q.brain.aggression + lr*reward*(a.hits? .35:-.08)+rnd(-explore,explore),.05,1.25);
- q.brain.block=clamp(q.brain.block + lr*reward*((a.blocks||0)-(a.wastedBlocks||0)*.5)+rnd(-explore,explore),.05,1.25);
- q.brain.shieldDiscipline=clamp(q.brain.shieldDiscipline + lr*((a.blocks||0)-(a.wastedBlocks||0)) + rnd(-explore*.5,explore*.5),.05,1.25);
- q.brain.flank=clamp(q.brain.flank + lr*reward*(a.backstabs||0)*1.2+rnd(-explore,explore),.05,1.25);
- q.brain.backstab=clamp(q.brain.backstab + lr*reward*(a.backstabs||0)*1.5+rnd(-explore,explore),.05,1.25);
- q.brain.dodge=clamp(q.brain.dodge+rnd(-explore,explore)+(won?.006:-.002),.05,1.25);
- q.brain.strafe=clamp(q.brain.strafe+rnd(-explore,explore),.05,1.25);
- q.brain.reach=clamp(q.brain.reach+rnd(-explore*.4,explore*.4),.7,1.15);
- q.brain.stunSkill=clamp(q.brain.stunSkill+lr*reward*(a.blocks||0)+rnd(-explore,explore),.05,1.25);
-}
-function angleDiff(a,b){return Math.atan2(Math.sin(b-a),Math.cos(b-a))}
-function update(me,en,dt){
- me.cool-=dt; me.blockCd=Math.max(0,me.blockCd-dt); me.stun=Math.max(0,me.stun-dt); if(me.stun>0){me.block=false;return}
- let dx=en.x-me.x,dy=en.y-me.y,d=Math.hypot(dx,dy)||1,target=Math.atan2(dy,dx);
- // Nicht sofort zum Gegner drehen: dadurch sind Flanken und Rückentreffer möglich.
- let turn=angleDiff(me.a,target), maxTurn=2.8*dt; me.a+=clamp(turn,-maxTurn,maxTurn);
- let ideal=82, forward=d>ideal+12?1:d<ideal-12?-.7:0;
- // Seitwärtsbewegung versucht gelegentlich hinter den Gegner zu kommen.
- let flankDir=(me.team==='b'?1:-1), side=flankDir*(.25+.9*me.brain.flank);
- if(d>150) side*=.25;
- let mx=Math.cos(target)*forward+Math.cos(target+Math.PI/2)*side;
- let my=Math.sin(target)*forward+Math.sin(target+Math.PI/2)*side;
- const margin=90,push=2.2;
- if(me.x<margin)mx+=(margin-me.x)/margin*push;if(me.x>W-margin)mx-=(me.x-(W-margin))/margin*push;
- if(me.y<margin)my+=(margin-me.y)/margin*push;if(me.y>H-margin)my-=(me.y-(H-margin))/margin*push;
- let len=Math.hypot(mx,my)||1,sp=88;me.vx=mx/len*sp;me.vy=my/len*sp;
- me.x=clamp(me.x+me.vx*dt,38,W-38);me.y=clamp(me.y+me.vy*dt,38,H-38);
- // Schild wird vor allem hochgenommen, wenn der Gegner in Schlagdistanz ist.
- let wasBlocking=me.block; me.block=d<112 && me.cool<.15 && me.blockCd<=0 && Math.random()<me.brain.block*.12; if(wasBlocking&&!me.block){me.blockCd=1; me.score-=0.35;me.actions.wastedBlocks++;  me.brain.shieldDiscipline=clamp(me.brain.shieldDiscipline-.012,.05,1.25);}
- if(d<92*me.brain.reach&&me.cool<=0&&!me.block&&Math.abs(angleDiff(me.a,target))<.8){
-   me.cool=.48+rnd(0,.18);
-   let fromDef=Math.atan2(me.y-en.y,me.x-en.x), rel=Math.abs(angleDiff(en.a,fromDef));
-   let behind=rel>2.15; // Treffer kommt deutlich von hinten
-   let blocked=en.block && rel<1.15;
-   if(blocked){me.stun=.5;me.score-=.25;en.score+=1.5;en.actions.blocks++; en.blockCd=0;en.brain.stunSkill=clamp(en.brain.stunSkill+.018,.05,1.25);en.brain.block=clamp(en.brain.block+.008,.05,1.25);}
-   else if(behind){en.hp=0;me.score+=8;me.actions.backstabs++;me.actions.hits++; me.brain.backstab=clamp(me.brain.backstab+.035,.05,1.25);me.brain.flank=clamp(me.brain.flank+.025,.05,1.25);}
-   else {let chance=.72-.18*en.brain.dodge;if(Math.random()<chance){en.hp-=rnd(12,18);me.score++;me.actions.hits++}}
- }
-}
-function drawBot(q){
- let col=q.team==='b'?'#1687ff':'#f23838';x.save();x.globalAlpha=q.stun>0?.48:1;x.translate(q.x,q.y);x.rotate(q.a);
- x.fillStyle=col;x.beginPath();x.arc(0,0,23,0,Math.PI*2);x.fill();
- // Schwert oben/rechts
- x.strokeStyle='#dfe7f1';x.lineWidth=5;x.lineCap='round';x.beginPath();x.moveTo(13,-22);x.lineTo(48,-22);x.stroke();
- x.strokeStyle='#9aa7b8';x.lineWidth=3;x.beginPath();x.moveTo(17,-29);x.lineTo(17,-15);x.stroke();
- x.fillStyle=col;x.beginPath();x.arc(12,-22,8,0,Math.PI*2);x.fill();
- // Schild unten/links, beim Blocken weiter nach vorne
- let sx=q.block?31:15;x.fillStyle='#c8d2df';x.beginPath();x.arc(sx,23,15,-1.35,1.35);x.lineTo(sx-8,23);x.closePath();x.fill();
- x.strokeStyle=col;x.lineWidth=4;x.stroke();x.fillStyle=col;x.beginPath();x.arc(10,23,8,0,Math.PI*2);x.fill();
- x.restore(); if(q.stun>0){x.save();x.globalAlpha=1;x.translate(q.x,q.y);let bob=Math.sin(performance.now()/90)*3;x.fillStyle='#ffd54a';x.font='bold 18px system-ui';x.textAlign='center';x.fillText('★',-16,-39+bob);x.fillText('★',2,-48-bob);x.fillText('★',19,-38+bob);x.restore();}x.fillStyle='#263143';x.fillRect(q.x-30,q.y-43,60,5);x.fillStyle=col;x.fillRect(q.x-30,q.y-43,60*Math.max(0,q.hp)/100,5)
-}
-let last=performance.now();function frame(t){let dt=Math.min(.03,(t-last)/1000)*speed;last=t;for(let i=0;i<Math.ceil(speed);i++){let sd=dt/Math.ceil(speed);update(B,R,sd);update(R,B,sd)}if(!roundOver&&(B.hp<=0||R.hp<=0)){roundOver=1;roundTimer=setTimeout(()=>{roundTimer=null;resetRound(B.hp>R.hp?'b':'r')},Math.max(3,300/speed))}x.clearRect(0,0,W,H);x.strokeStyle='#344154';x.lineWidth=2;x.strokeRect(16,16,W-32,H-32);drawBot(B);drawBot(R);requestAnimationFrame(frame)}requestAnimationFrame(frame);
-document.querySelector('#speed').onclick=()=>{speed=speed===1?100:1;document.querySelector('#speed').textContent='Tempo ×'+speed};document.querySelector('#reset').onclick=()=>{if(roundTimer){clearTimeout(roundTimer);roundTimer=null}B=botFrom(B,'b');R=botFrom(R,'r');roundOver=0;document.querySelector('#stats').innerHTML='Generation '+gen+'<br>Zurück auf Startposition'};
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>AI Fight Lab</title><style>*{box-sizing:border-box}body{margin:0;background:#0d1118;color:#eef4ff;font-family:system-ui,Arial;overflow:hidden}#top{height:86px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;padding:8px 14px;background:#151b25;border-bottom:1px solid #263143;font-size:13px}.team{display:flex;justify-content:space-between;align-items:center}.teamRight{display:flex;align-items:center;gap:6px}.io{padding:3px 7px;border-radius:7px;font-size:11px;background:#263143;color:#fff;border:0}.name{font-weight:900}.blue{color:#4ba3ff}.red{color:#ff5252}.yellow{color:#ffd740}.green{color:#43d17d}#stats{grid-column:1/3;text-align:center;color:#aebbd0;font-size:12px}canvas{display:block;width:100vw;height:calc(100dvh - 162px);background:radial-gradient(circle at center,#202a38,#111721)}#bottom{height:76px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:#151b25;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #263143}button,select{border:0;border-radius:12px;padding:11px 17px;background:#263143;color:white;font-weight:750;font-size:14px}select{appearance:auto}.primary{background:#287cff}</style></head><body><div id="top"><div class="team"><b class="name blue">BLAU</b><span class="teamRight"><span id="bS">Siege 0</span><button class="io exportAI" data-team="b" title="Blau herunterladen">↓</button><button class="io importAI" data-team="b" title="Blau hochladen">↑</button></span></div><div class="team"><b class="name red">ROT</b><span class="teamRight"><span id="rS">Siege 0</span><button class="io exportAI" data-team="r" title="Rot herunterladen">↓</button><button class="io importAI" data-team="r" title="Rot hochladen">↑</button></span></div><div class="team"><b class="name yellow">GELB</b><span class="teamRight"><span id="yS">Siege 0</span><button class="io exportAI" data-team="y" title="Gelb herunterladen">↓</button><button class="io importAI" data-team="y" title="Gelb hochladen">↑</button></span></div><div class="team"><b class="name green">GRÜN</b><span class="teamRight"><span id="gS">Siege 0</span><button class="io exportAI" data-team="g" title="Grün herunterladen">↓</button><button class="io importAI" data-team="g" title="Grün hochladen">↑</button></span></div><div id="stats">Generation 1 · Server-Sync…</div></div><input id="aiFile" type="file" accept="application/json,.json" hidden><canvas id="c"></canvas><div id="bottom"><select id="speed" aria-label="Tempo"><option value="1">×1</option><option value="2">×2</option><option value="4">×4</option><option value="8">×8</option><option value="20">×20</option><option value="50">×50</option><option value="100">×100</option><option value="200">×200</option><option value="500">×500</option><option value="1000">×1000</option></select><button class="primary" id="reset">Positionen resetten</button></div><script>
+const c=document.querySelector('#c'),ctx=c.getContext('2d');let W,H,gen=1,speed=1,last=performance.now(),roundOver=false;
+const colors={b:'#1687ff',r:'#f23838',y:'#ffd12e',g:'#31c96b'},names={b:'Blau',r:'Rot',y:'Gelb',g:'Grün'},wins={b:0,r:0,y:0,g:0};
+const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const base={aggression:.55,strafe:.5,reach:.92,dodge:.4,block:.5,flank:.5,stunSkill:.5,backstab:.5,sprint:.5};
+function resize(){W=innerWidth;H=innerHeight-162;c.width=W*devicePixelRatio;c.height=H*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}addEventListener('resize',resize);resize();
+function spawn(t,brain){const P={b:[.2,.25,0],r:[.8,.25,Math.PI],y:[.2,.75,0],g:[.8,.75,Math.PI]}[t];return{team:t,x:W*P[0],y:H*P[1],a:P[2],hp:100,stamina:100,sprinting:false,cool:0,stun:0,block:false,blockCd:0,blockTime:0,score:0,actions:{hits:0,blocks:0,backstabs:0},brain:{...(brain||base)}}}
+let bots=['b','r','y','g'].map(t=>spawn(t));
+function nearest(me){let best=null,bd=1e9;for(const q of bots)if(q!==me&&q.hp>0){let d=Math.hypot(q.x-me.x,q.y-me.y);if(d<bd){bd=d;best=q}}return best}
+function ad(a,b){return Math.atan2(Math.sin(b-a),Math.cos(b-a))}
+function update(me,dt){if(me.hp<=0)return;me.cool-=dt;me.blockCd=Math.max(0,me.blockCd-dt);me.stun=Math.max(0,me.stun-dt);if(me.stun>0){me.block=false;return}const en=nearest(me);if(!en)return;let dx=en.x-me.x,dy=en.y-me.y,d=Math.hypot(dx,dy)||1,target=Math.atan2(dy,dx);me.a+=clamp(ad(me.a,target),-2.8*dt,2.8*dt);let f=d>90?1:d<70?-.65:0,side=(me.team==='b'||me.team==='y'?1:-1)*(.25+.9*me.brain.flank);if(d>160)side*=.2;let mx=Math.cos(target)*f+Math.cos(target+Math.PI/2)*side,my=Math.sin(target)*f+Math.sin(target+Math.PI/2)*side;const m=80;if(me.x<m)mx+=2;if(me.x>W-m)mx-=2;if(me.y<m)my+=2;if(me.y>H-m)my-=2;let l=Math.hypot(mx,my)||1;const wantsSprint=me.stamina>12&&(d>135||Math.abs(side)>.75)&&Math.random()<(.35+.5*me.brain.sprint);me.sprinting=wantsSprint;if(wantsSprint){me.stamina=Math.max(0,me.stamina-32*dt)}else{me.stamina=Math.min(100,me.stamina+19*dt)}const moveSpeed=86*(wantsSprint?1.75:1);me.x=clamp(me.x+mx/l*moveSpeed*dt,38,W-38);me.y=clamp(me.y+my/l*moveSpeed*dt,38,H-38);
+// Block dauert jetzt 0,65 s. Fehlgeschlagene Blocks haben KEINE Strafe.
+if(me.block){me.blockTime-=dt;if(me.blockTime<=0){me.block=false;me.blockCd=1}}else if(d<120&&me.blockCd<=0&&Math.random()<me.brain.block*.055){me.block=true;me.blockTime=.65}
+if(d<92*me.brain.reach&&me.cool<=0&&!me.block&&Math.abs(ad(me.a,target))<.8){me.cool=.5+rnd(0,.16);let from=Math.atan2(me.y-en.y,me.x-en.x),rel=Math.abs(ad(en.a,from)),behind=rel>2.15,blocked=en.block&&rel<1.15;if(blocked){me.stun=.5;en.score+=1.5;en.actions.blocks++;en.blockCd=0;en.blockTime=Math.max(en.blockTime,.25)}else if(behind){en.hp=0;me.score+=8;me.actions.backstabs++;me.actions.hits++}else if(Math.random()<.72-.18*en.brain.dodge){en.hp-=rnd(12,18);me.score++;me.actions.hits++}}}
+function learn(q,won){let reward=clamp(q.score/8,-1.5,1.5),e=.045,lr=.022,a=q.actions;q.brain.aggression=clamp(q.brain.aggression+lr*reward*(a.hits?.35:-.05)+rnd(-e,e),.05,1.25);q.brain.block=clamp(q.brain.block+lr*reward*(a.blocks||0)+rnd(-e,e),.05,1.25);q.brain.flank=clamp(q.brain.flank+lr*reward*(a.backstabs||0)*1.2+rnd(-e,e),.05,1.25);q.brain.backstab=clamp(q.brain.backstab+lr*reward*(a.backstabs||0)*1.5+rnd(-e,e),.05,1.25);q.brain.dodge=clamp(q.brain.dodge+rnd(-e,e)+(won?.006:-.002),.05,1.25);q.brain.strafe=clamp(q.brain.strafe+rnd(-e,e),.05,1.25);q.brain.reach=clamp(q.brain.reach+rnd(-e*.4,e*.4),.7,1.15);q.brain.stunSkill=clamp(q.brain.stunSkill+lr*reward*(a.blocks||0)+rnd(-e,e),.05,1.25);q.brain.sprint=clamp((q.brain.sprint??.5)+rnd(-e*.5,e*.5)+(won?.004:-.001),.05,1.25)}
+async function save(){try{await fetch('/api/state',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({gen,wins,brains:Object.fromEntries(bots.map(q=>[q.team,q.brain]))})});document.querySelector('#stats').textContent='Generation '+gen+' · serverseitig gespeichert'}catch{document.querySelector('#stats').textContent='Generation '+gen+' · Server nicht verbunden'}}
+async function load(){try{let r=await fetch('/api/state');if(!r.ok)return;let s=await r.json();if(s.gen)gen=s.gen;if(s.wins)Object.assign(wins,s.wins);if(s.brains)bots=bots.map(q=>spawn(q.team,s.brains[q.team]));ui()}catch{}}load();
+function ui(){for(const t of ['b','r','y','g'])document.querySelector('#'+t+'S').textContent='Siege '+wins[t];document.querySelector('#stats').textContent='Generation '+gen}
+function nextRound(){let alive=bots.filter(q=>q.hp>0);if(alive.length>1)return;let winner=alive[0];if(winner)wins[winner.team]++;for(const q of bots)learn(q,q===winner);const brains=Object.fromEntries(bots.map(q=>[q.team,q.brain]));gen++;bots=['b','r','y','g'].map(t=>spawn(t,brains[t]));roundOver=false;ui();save()}
+function draw(q){if(q.hp<=0)return;let col=colors[q.team];ctx.save();ctx.globalAlpha=q.stun>0?.48:1;ctx.translate(q.x,q.y);ctx.rotate(q.a);ctx.fillStyle=col;ctx.beginPath();ctx.arc(0,0,21,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#e5edf7';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(13,-20);ctx.lineTo(46,-20);ctx.stroke();ctx.fillStyle=col;ctx.beginPath();ctx.arc(11,-20,7,0,Math.PI*2);ctx.fill();let sx=q.block?31:15;ctx.fillStyle='#c8d2df';ctx.beginPath();ctx.arc(sx,21,14,-1.35,1.35);ctx.lineTo(sx-8,21);ctx.closePath();ctx.fill();ctx.strokeStyle=col;ctx.lineWidth=4;ctx.stroke();ctx.restore();if(q.stun>0){ctx.fillStyle='#ffd54a';ctx.font='bold 17px system-ui';ctx.textAlign='center';ctx.fillText('★ ★ ★',q.x,q.y-37)}ctx.fillStyle='#263143';ctx.fillRect(q.x-27,q.y-40,54,5);ctx.fillStyle=col;ctx.fillRect(q.x-27,q.y-40,54*Math.max(0,q.hp)/100,5);ctx.fillStyle='#263143';ctx.fillRect(q.x-27,q.y-32,54,4);ctx.fillStyle='#f0c94a';ctx.fillRect(q.x-27,q.y-32,54*Math.max(0,q.stamina)/100,4);if(q.sprinting){ctx.fillStyle='#fff';ctx.font='bold 9px system-ui';ctx.textAlign='center';ctx.fillText('SPRINT',q.x,q.y-47)}}
+function frame(t){let real=Math.min(.03,(t-last)/1000);last=t,steps=Math.ceil(speed),dt=real*speed/steps;for(let i=0;i<steps;i++){for(const q of bots)update(q,dt);if(bots.filter(q=>q.hp>0).length<=1){nextRound();break}}ctx.clearRect(0,0,W,H);ctx.strokeStyle='#344154';ctx.lineWidth=2;ctx.strokeRect(16,16,W-32,H-32);bots.forEach(draw);requestAnimationFrame(frame)}requestAnimationFrame(frame);
+
+function validBrain(b){return b&&typeof b==='object'&&['aggression','strafe','reach','dodge','block','flank','stunSkill','backstab','sprint'].every(k=>Number.isFinite(Number(b[k])))}
+function exportAI(team){const q=bots.find(x=>x.team===team);if(!q)return;const data={type:'AI-Fight-Lab-Brain',version:1,team,name:names[team],generation:gen,wins:wins[team],brain:q.brain};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AI-'+names[team]+'-Gen-'+gen+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+let importTeam=null;const aiFile=document.querySelector('#aiFile');
+document.querySelectorAll('.exportAI').forEach(b=>b.onclick=()=>exportAI(b.dataset.team));
+document.querySelectorAll('.importAI').forEach(b=>b.onclick=()=>{importTeam=b.dataset.team;aiFile.value='';aiFile.click()});
+aiFile.onchange=async()=>{const f=aiFile.files&&aiFile.files[0];if(!f||!importTeam)return;try{const data=JSON.parse(await f.text()),brain=data.brain||data;if(!validBrain(brain))throw new Error('invalid');const t=importTeam,q=bots.find(x=>x.team===t);q.brain={...base,...Object.fromEntries(Object.entries(brain).map(([k,v])=>[k,Number(v)]))};document.querySelector('#stats').textContent=names[t]+' KI geladen · Generation '+gen;save()}catch{document.querySelector('#stats').textContent='Ungültige KI-Datei'}};
+
+const speedBtn=document.querySelector('#speed');speedBtn.onchange=()=>{speed=Number(speedBtn.value)};document.querySelector('#reset').onclick=()=>{const brains=Object.fromEntries(bots.map(q=>[q.team,q.brain]));bots=['b','r','y','g'].map(t=>spawn(t,brains[t]))};
 </script></body></html>
