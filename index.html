@@ -129,7 +129,7 @@ function validateRounds(rounds         )          {
 ;return validateCheckpoint;})();
 
 'use strict';
-const LIVE_SITE_URL='https://ai-fight-lab-learning.pascalruddat.chatgpt.site';
+
 const $=s=>document.querySelector(s);
 const c=$('#c'),ctx=c.getContext('2d');
 const COLORS={b:'#1687ff',r:'#f23838',y:'#ffd12e',g:'#31c96b',ki:'#b794ff'};
@@ -523,10 +523,6 @@ function draw(q){
 function ui(){
   for(const t of TEAMS)$('#'+t+'S').textContent='Siege '+wins[t];
   $('#stats').textContent='Generation '+generation+' · '+syncMessage;
-  if(location.protocol==='file:'){
-    const link=document.createElement('a');link.href=LIVE_SITE_URL;link.target='_top';link.textContent='Website öffnen';
-    $('#stats').append(' · ',link);
-  }
   $('#learnerLine').hidden=!learnerEnabled;$('#learningNote').hidden=!learnerEnabled;
   $('#placeKI').disabled=!ready||learnerEnabled||conflict;$('#placeKI').textContent=learnerEnabled?'KI platziert':'Place KI';
   $('#pause').disabled=!ready||conflict;$('#reset').disabled=!ready||conflict;$('#speed').disabled=!ready||conflict;
@@ -638,7 +634,7 @@ if(modelContext&&modelContext.registerTool){
     {name:'place_learning_fighter',title:'Lernende KI platzieren',description:'Platziert die lila KI mit demselben Körper in der Arena und beginnt das Lernen.',
       inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false},
       execute(input){if(!input||typeof input!=='object'||Object.keys(input).length)throw Error('Keine Parameter erwartet');return placeKI()}},
-    {name:'read_learning_progress',title:'Lernfortschritt lesen',description:'Liest Lernschritte, Siege, Erfahrungen und den Status der Serverspeicherung.',
+    {name:'read_learning_progress',title:'Lernfortschritt lesen',description:'Liest Lernschritte, Siege, Erfahrungen und den Status der Gerätespeicherung.',
       inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},
       execute(input){if(!input||typeof input!=='object'||Object.keys(input).length)throw Error('Keine Parameter erwartet');return {
         placed:learnerEnabled,decisions:model?model.decisions:0,updates:model?model.updates:0,episodes:model?model.episodes:0,
