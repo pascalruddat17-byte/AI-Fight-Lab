@@ -1,0 +1,67 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>AI Fight Lab</title><style>*{box-sizing:border-box}body{margin:0;background:#0d1118;color:#eef4ff;font-family:system-ui,Arial;overflow:hidden}#top{height:72px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#151b25;border-bottom:1px solid #263143}.name{font-weight:800}.blue{color:#4ba3ff}.red{color:#ff5252}#stats{text-align:center;font-size:13px;color:#aebbd0}canvas{display:block;width:100vw;height:calc(100dvh - 148px);background:radial-gradient(circle at center,#202a38,#111721)}#bottom{height:76px;position:relative;z-index:5;padding-bottom:max(8px,env(safe-area-inset-bottom));background:#151b25;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid #263143}button{border:0;border-radius:12px;padding:11px 17px;background:#263143;color:white;font-weight:750}button.primary{background:#287cff}</style></head><body><div id="top"><div><div class="name blue">BLAU</div><div id="bs">Siege 0</div></div><div id="stats">Generation 1<br>KI lernt…</div><div style="text-align:right"><div class="name red">ROT</div><div id="rs">Siege 0</div></div></div><canvas id="c"></canvas><div id="bottom"><button id="speed">Tempo ×1</button><button class="primary" id="reset">Neu starten</button></div><script>
+const c=document.querySelector('#c'),x=c.getContext('2d'); let W,H,gen=1,bwins=0,rwins=0,speed=1;
+function resize(){W=c.width=innerWidth*devicePixelRatio;H=c.height=(innerHeight-148)*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);W=innerWidth;H=innerHeight-148} addEventListener('resize',resize);resize();
+const rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const baseBrain={aggression:.55,strafe:.5,reach:.92,dodge:.4,block:.5,flank:.5,stunSkill:.5,shieldDiscipline:.5,backstab:.5};
+function bot(team){return {team,x:team==='b'?W*.28:W*.72,y:H*.5,a:team==='b'?0:Math.PI,hp:100,cool:0,stun:0,block:false,blockCd:0,score:0,actions:{hits:0,blocks:0,backstabs:0,wastedBlocks:0},brain:{...baseBrain},vx:0,vy:0}}
+let B=bot('b'),R=bot('r'),roundOver=0,roundTimer=null;
+function resetRound(winner){if(winner){winner==='b'?bwins++:rwins++; learn(B,winner==='b');learn(R,winner==='r');gen++;document.querySelector('#bs').textContent='Siege '+bwins;document.querySelector('#rs').textContent='Siege '+rwins;document.querySelector('#stats').innerHTML='Generation '+gen+'<br>Strategien werden angepasst';}B=botFrom(B,'b');R=botFrom(R,'r');roundOver=0}
+function botFrom(old,t){let n=bot(t); if(old)n.brain={...old.brain}; return n}
+function learn(q,won){
+ // Jede KI lernt ausschließlich aus ihrem eigenen Reward. Exploration verhindert Festfahren.
+ const reward=clamp(q.score/8,-1.5,1.5), explore=.045, lr=.022;
+ const a=q.actions||{};
+ q.brain.aggression=clamp(q.brain.aggression + lr*reward*(a.hits? .35:-.08)+rnd(-explore,explore),.05,1.25);
+ q.brain.block=clamp(q.brain.block + lr*reward*((a.blocks||0)-(a.wastedBlocks||0)*.5)+rnd(-explore,explore),.05,1.25);
+ q.brain.shieldDiscipline=clamp(q.brain.shieldDiscipline + lr*((a.blocks||0)-(a.wastedBlocks||0)) + rnd(-explore*.5,explore*.5),.05,1.25);
+ q.brain.flank=clamp(q.brain.flank + lr*reward*(a.backstabs||0)*1.2+rnd(-explore,explore),.05,1.25);
+ q.brain.backstab=clamp(q.brain.backstab + lr*reward*(a.backstabs||0)*1.5+rnd(-explore,explore),.05,1.25);
+ q.brain.dodge=clamp(q.brain.dodge+rnd(-explore,explore)+(won?.006:-.002),.05,1.25);
+ q.brain.strafe=clamp(q.brain.strafe+rnd(-explore,explore),.05,1.25);
+ q.brain.reach=clamp(q.brain.reach+rnd(-explore*.4,explore*.4),.7,1.15);
+ q.brain.stunSkill=clamp(q.brain.stunSkill+lr*reward*(a.blocks||0)+rnd(-explore,explore),.05,1.25);
+}
+function angleDiff(a,b){return Math.atan2(Math.sin(b-a),Math.cos(b-a))}
+function update(me,en,dt){
+ me.cool-=dt; me.blockCd=Math.max(0,me.blockCd-dt); me.stun=Math.max(0,me.stun-dt); if(me.stun>0){me.block=false;return}
+ let dx=en.x-me.x,dy=en.y-me.y,d=Math.hypot(dx,dy)||1,target=Math.atan2(dy,dx);
+ // Nicht sofort zum Gegner drehen: dadurch sind Flanken und Rückentreffer möglich.
+ let turn=angleDiff(me.a,target), maxTurn=2.8*dt; me.a+=clamp(turn,-maxTurn,maxTurn);
+ let ideal=82, forward=d>ideal+12?1:d<ideal-12?-.7:0;
+ // Seitwärtsbewegung versucht gelegentlich hinter den Gegner zu kommen.
+ let flankDir=(me.team==='b'?1:-1), side=flankDir*(.25+.9*me.brain.flank);
+ if(d>150) side*=.25;
+ let mx=Math.cos(target)*forward+Math.cos(target+Math.PI/2)*side;
+ let my=Math.sin(target)*forward+Math.sin(target+Math.PI/2)*side;
+ const margin=90,push=2.2;
+ if(me.x<margin)mx+=(margin-me.x)/margin*push;if(me.x>W-margin)mx-=(me.x-(W-margin))/margin*push;
+ if(me.y<margin)my+=(margin-me.y)/margin*push;if(me.y>H-margin)my-=(me.y-(H-margin))/margin*push;
+ let len=Math.hypot(mx,my)||1,sp=88;me.vx=mx/len*sp;me.vy=my/len*sp;
+ me.x=clamp(me.x+me.vx*dt,38,W-38);me.y=clamp(me.y+me.vy*dt,38,H-38);
+ // Schild wird vor allem hochgenommen, wenn der Gegner in Schlagdistanz ist.
+ let wasBlocking=me.block; me.block=d<112 && me.cool<.15 && me.blockCd<=0 && Math.random()<me.brain.block*.12; if(wasBlocking&&!me.block){me.blockCd=1; me.score-=0.35;me.actions.wastedBlocks++;  me.brain.shieldDiscipline=clamp(me.brain.shieldDiscipline-.012,.05,1.25);}
+ if(d<92*me.brain.reach&&me.cool<=0&&!me.block&&Math.abs(angleDiff(me.a,target))<.8){
+   me.cool=.48+rnd(0,.18);
+   let fromDef=Math.atan2(me.y-en.y,me.x-en.x), rel=Math.abs(angleDiff(en.a,fromDef));
+   let behind=rel>2.15; // Treffer kommt deutlich von hinten
+   let blocked=en.block && rel<1.15;
+   if(blocked){me.stun=.5;me.score-=.25;en.score+=1.5;en.actions.blocks++; en.blockCd=0;en.brain.stunSkill=clamp(en.brain.stunSkill+.018,.05,1.25);en.brain.block=clamp(en.brain.block+.008,.05,1.25);}
+   else if(behind){en.hp=0;me.score+=8;me.actions.backstabs++;me.actions.hits++; me.brain.backstab=clamp(me.brain.backstab+.035,.05,1.25);me.brain.flank=clamp(me.brain.flank+.025,.05,1.25);}
+   else {let chance=.72-.18*en.brain.dodge;if(Math.random()<chance){en.hp-=rnd(12,18);me.score++;me.actions.hits++}}
+ }
+}
+function drawBot(q){
+ let col=q.team==='b'?'#1687ff':'#f23838';x.save();x.globalAlpha=q.stun>0?.48:1;x.translate(q.x,q.y);x.rotate(q.a);
+ x.fillStyle=col;x.beginPath();x.arc(0,0,23,0,Math.PI*2);x.fill();
+ // Schwert oben/rechts
+ x.strokeStyle='#dfe7f1';x.lineWidth=5;x.lineCap='round';x.beginPath();x.moveTo(13,-22);x.lineTo(48,-22);x.stroke();
+ x.strokeStyle='#9aa7b8';x.lineWidth=3;x.beginPath();x.moveTo(17,-29);x.lineTo(17,-15);x.stroke();
+ x.fillStyle=col;x.beginPath();x.arc(12,-22,8,0,Math.PI*2);x.fill();
+ // Schild unten/links, beim Blocken weiter nach vorne
+ let sx=q.block?31:15;x.fillStyle='#c8d2df';x.beginPath();x.arc(sx,23,15,-1.35,1.35);x.lineTo(sx-8,23);x.closePath();x.fill();
+ x.strokeStyle=col;x.lineWidth=4;x.stroke();x.fillStyle=col;x.beginPath();x.arc(10,23,8,0,Math.PI*2);x.fill();
+ x.restore(); if(q.stun>0){x.save();x.globalAlpha=1;x.translate(q.x,q.y);let bob=Math.sin(performance.now()/90)*3;x.fillStyle='#ffd54a';x.font='bold 18px system-ui';x.textAlign='center';x.fillText('★',-16,-39+bob);x.fillText('★',2,-48-bob);x.fillText('★',19,-38+bob);x.restore();}x.fillStyle='#263143';x.fillRect(q.x-30,q.y-43,60,5);x.fillStyle=col;x.fillRect(q.x-30,q.y-43,60*Math.max(0,q.hp)/100,5)
+}
+let last=performance.now();function frame(t){let dt=Math.min(.03,(t-last)/1000)*speed;last=t;for(let i=0;i<Math.ceil(speed);i++){let sd=dt/Math.ceil(speed);update(B,R,sd);update(R,B,sd)}if(!roundOver&&(B.hp<=0||R.hp<=0)){roundOver=1;roundTimer=setTimeout(()=>{roundTimer=null;resetRound(B.hp>R.hp?'b':'r')},Math.max(3,300/speed))}x.clearRect(0,0,W,H);x.strokeStyle='#344154';x.lineWidth=2;x.strokeRect(16,16,W-32,H-32);drawBot(B);drawBot(R);requestAnimationFrame(frame)}requestAnimationFrame(frame);
+document.querySelector('#speed').onclick=()=>{speed=speed===1?100:1;document.querySelector('#speed').textContent='Tempo ×'+speed};document.querySelector('#reset').onclick=()=>{if(roundTimer){clearTimeout(roundTimer);roundTimer=null}B=botFrom(B,'b');R=botFrom(R,'r');roundOver=0;document.querySelector('#stats').innerHTML='Generation '+gen+'<br>Zurück auf Startposition'};
+</script></body></html>
