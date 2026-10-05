@@ -31,10 +31,12 @@ button{cursor:pointer}button:disabled{cursor:default;opacity:.56}button:focus-vi
 #gate[hidden]{display:none}#gateBox{max-width:340px;text-align:center;font-size:15px;line-height:1.6}#gateBox p{margin:0 0 14px}
 @media(max-width:420px){#top{gap:4px 10px;padding:8px 10px;font-size:13px}.teamRight{gap:4px}.io{padding:4px 6px}#bottom{gap:6px;padding-left:8px;padding-right:8px}#bottom button{padding:10px 11px;font-size:13px}#bottom select{font-size:13px}#learnerNumbers{font-size:12px}}
 @media(max-height:430px){#top{padding:4px 10px;gap:2px 15px}.io{min-height:25px;padding:3px 5px}#learnerLine{padding-top:2px}#bottom{min-height:58px;padding-top:7px;padding-bottom:7px}#learningNote{bottom:15px}}
+
+.appHeader{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 10px;background:#0d1423}.appHeader small,.panel>small,.sectionTitle small{font-size:10px;letter-spacing:2px;color:#8c9ab8}h1{font-size:25px;margin:4px 0;letter-spacing:-1px}h1 span{font-size:10px;color:#8feecc;margin-left:10px}.localBadge{font-size:10px;padding:8px 10px;background:#1a2b32;color:#90dec8;border-radius:20px}#top{background:#0d1423;border:0;display:flex;flex-wrap:wrap;justify-content:space-around;gap:8px;padding:8px 16px 12px}.team{font-size:11px;gap:5px}.team .io{display:none}.teamRight{font-size:10px;color:#90a0bc}#learnerLine{border:0;padding:0;font-size:11px}#learnerNumbers{font-size:11px}#stats{width:100%;font-size:10px;color:#71839e}.panel{flex:1;overflow:auto;min-height:0;padding:22px 18px;background:#0d1423}.panel[hidden]{display:none}h2{font-size:24px;letter-spacing:-.7px;margin:6px 0 18px}.panel p{color:#8e9db7;font-size:13px;line-height:1.6}.sectionTitle{display:flex;justify-content:space-between;align-items:center}.kiCard{background:#172238;border:1px solid #26364e;border-radius:18px;padding:16px;margin-bottom:12px}.cardHeading{display:flex;align-items:center;gap:10px}.dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}.kiCard input{background:transparent;color:white;font:700 16px system-ui;border:0;min-width:0;width:100%;padding:8px 0}.cardStats{display:flex;gap:22px;margin:12px 0;color:#92a4c3;font-size:12px}.cardStats b{display:block;color:#eaf1ff;font-size:20px}.cardActions{display:flex;gap:8px}.cardActions button{font-size:12px;padding:10px;flex:1}.backupBox{padding:16px;background:#141e30;border-radius:16px;margin-top:22px}.backupBox h3{font-size:15px;margin:0}.backupBox button{font-size:12px}.backupBox p{margin:8px 0 14px}#backupActions{display:flex;gap:8px}#backupActions button{flex:1}#bottom{min-height:68px;background:#0d1423;border:0;gap:8px;padding:10px 16px}#bottom button{font-size:12px;padding:10px 12px}#reset{background:#26364e;font-size:0!important}#reset:after{content:'↻';font-size:19px}#tabs{display:flex;background:#101b2e;border-top:1px solid #26364e;padding:8px 16px max(8px,env(safe-area-inset-bottom));gap:8px}#tabs button{flex:1;background:transparent;color:#8396b8;font-size:20px;padding:6px;min-height:48px;border-radius:14px}#tabs button span{display:block;font-size:10px;margin-top:3px}#tabs button.selected{color:#bca5ff;background:#252441}#arena{margin:0 10px;border:1px solid #26364e;border-radius:22px;background:radial-gradient(ellipse,#1b2b42,#101b2d)}#learningNote{left:16px;bottom:12px;font-size:10px}#spawnCanvas{width:100%;height:310px;display:block;background:#172238;border:1px solid #2b3c55;border-radius:20px;touch-action:none}#spawnList{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}#spawnList span{font-size:11px;background:#172238;border-radius:20px;padding:8px 10px}#applySpawns{width:100%}@media(min-width:700px){.panel{padding:24px max(24px,calc((100vw - 650px)/2))}.appHeader{padding:18px 28px}#tabs{justify-content:center}#tabs button{max-width:180px}#spawnCanvas{height:380px}}@media(max-height:500px){.appHeader{padding:5px 16px}.appHeader small{display:none}h1{font-size:18px}#top{padding:2px 16px}#tabs{padding:3px}#tabs button{min-height:36px}#bottom{min-height:45px;padding:4px}#learningNote{display:none}}
 </style>
 </head>
 <body>
-<div id="top">
+<header class="appHeader"><div><small>TRAINING ARENA</small><h1>Fight Lab<span>●</span></h1></div><span class="localBadge">Auf deinem Gerät</span></header><div id="top">
   <div class="team"><b class="name blue">BLAU</b><span class="teamRight"><span id="bS">Siege 0</span><button class="io exportAI" data-team="b" title="Blau herunterladen" aria-label="Blau herunterladen">↓</button><button class="io importAI" data-team="b" title="Blau hochladen" aria-label="Blau hochladen">↑</button></span></div>
   <div class="team"><b class="name red">ROT</b><span class="teamRight"><span id="rS">Siege 0</span><button class="io exportAI" data-team="r" title="Rot herunterladen" aria-label="Rot herunterladen">↓</button><button class="io importAI" data-team="r" title="Rot hochladen" aria-label="Rot hochladen">↑</button></span></div>
   <div class="team"><b class="name yellow">GELB</b><span class="teamRight"><span id="yS">Siege 0</span><button class="io exportAI" data-team="y" title="Gelb herunterladen" aria-label="Gelb herunterladen">↓</button><button class="io importAI" data-team="y" title="Gelb hochladen" aria-label="Gelb hochladen">↑</button></span></div>
@@ -48,16 +50,16 @@ button{cursor:pointer}button:disabled{cursor:default;opacity:.56}button:focus-vi
   <div id="learningNote" hidden><div id="rewardEvent">Noch keine Erfahrung</div><div id="learnDetail">Sie probiert ihre Aktionen aus.</div></div>
   <div id="gate"><div id="gateBox"><p id="gateText">Lernstand wird geladen…</p><button id="retry" hidden>Erneut versuchen</button></div></div>
 </div>
-<div id="bottom">
+<section id="manager" class="panel" hidden><div class="sectionTitle"><div><small>DEINE KÄMPFER</small><h2>KI-Verwaltung</h2></div><button id="addManaged" class="primary">+ KI</button></div><div id="kiCards"></div><div class="backupBox"><h3>Lernstand sichern</h3><p>Alle KIs als Datei mitnehmen.</p><div id="backupActions"></div></div></section><section id="spawns" class="panel" hidden><small>START DER NÄCHSTEN RUNDE</small><h2>Startpositionen</h2><p>Ziehe die farbigen Punkte an ihre Startplätze.</p><canvas id="spawnCanvas" aria-label="Startpositionen verschieben"></canvas><div id="spawnList"></div><button class="primary" id="applySpawns">Positionen anwenden</button></section><div id="bottom">
   <select id="speed" aria-label="Trainingsgeschwindigkeit">
     <option value="1">×1</option><option value="2">×2</option><option value="4">×4</option><option value="8">×8</option><option value="20">×20</option><option value="50">×50</option><option value="100">×100</option><option value="200">×200</option><option value="500">×500</option><option value="1000">×1000</option>
   </select>
   <button class="primary" id="placeKI" disabled>Place KI</button>
   <button id="pause" disabled>Pause</button>
   <button id="reset" disabled>Positionen resetten</button><button id="backup">Exportieren</button><button id="restoreBackup">Importieren</button><input id="backupFile" type="file" accept=".json,application/json" hidden>
-</div>
+</div><nav id="tabs" aria-label="Bereiche"><button data-tab="fight" class="selected">◈<span>Kampf</span></button><button data-tab="manager">◎<span>KIs</span></button><button data-tab="spawns">⌖<span>Spawns</span></button></nav>
 <script>
-const validateCheckpoint=(()=>{const INPUTS = 42, HIDDEN = 48, ACTIONS = 18;
+const validateLegacy=(()=>{const INPUTS = 42, HIDDEN = 48, ACTIONS = 18;
 const PARAMS = INPUTS * HIDDEN + HIDDEN + HIDDEN * ACTIONS + ACTIONS;
 const teams = ["b", "r", "y", "g", "ki"];
 const finite = (n         , limit = 1e12)              =>
@@ -148,6 +150,8 @@ let learnerEnabled=false,model=null,bots=[],wins={b:0,r:0,y:0,g:0,ki:0};
 let ready=false,paused=false,last=performance.now(),accumulator=0,uiAt=0;
 let pendingRounds=[],revision=0,mutation=0,savedMutation=-1,inflight=null,lastSaveAt=0;
 let conflict=false,syncMessage='Lernstand wird geladen…',saveRetry=null;
+let learnerModels={},learnerInfo={},spawnPoints={},activeTab='fight',dragSpawn=null;
+const isLearner=t=>/^ki(?:[2-4])?$/.test(t);
 let eventLabel='Noch keine Erfahrung',eventAt=0;
 
 // Actions describe only available motor inputs, never tactics or situation-dependent rules.
@@ -214,8 +218,8 @@ class DQN {
   }
   remember(s,a,r,s2,done,elapsed) {
     const e=[quant(s),a,r,quant(s2),done,elapsed];
-    if(this.replay.length<1200)this.replay.push(e);
-    else {this.replay[this.replayCursor]=e;this.replayCursor=(this.replayCursor+1)%1200}
+    if(this.replay.length<400)this.replay.push(e);
+    else {this.replay[this.replayCursor]=e;this.replayCursor=(this.replayCursor+1)%400}
     // Rewards train the network through gradients, not hand-written personality adjustments.
     if(this.replay.length>=32&&(this.decisions%4===0||done))this.train();
   }
@@ -260,16 +264,17 @@ class DQN {
 
 function resize(){
   const oldW=W,oldH=H;const box=$('#arena').getBoundingClientRect();
-  W=Math.max(100,box.width);H=Math.max(100,box.height);
+  if(!box.width||!box.height)return;
+  W=Math.max(800,box.width);H=Math.max(300,box.height*W/box.width);
   const ratio=Math.min(devicePixelRatio||1,2);
-  c.width=Math.round(W*ratio);c.height=Math.round(H*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);
+  c.width=Math.round(box.width*ratio);c.height=Math.round(box.height*ratio);const scale=box.width/W;ctx.setTransform(ratio*scale,0,0,ratio*scale,0,0);
   for(const q of bots){q.x=clamp(q.x/oldW*W,26,W-26);q.y=clamp(q.y/oldH*H,26,H-26)}
 }
 addEventListener('resize',resize);
 new ResizeObserver(resize).observe($('#arena'));
 resize();
 function spawn(t,brain){
-  const p={b:[.2,.25,0],r:[.8,.25,Math.PI],y:[.2,.75,0],g:[.8,.75,Math.PI],ki:[.5,.5,rnd(-Math.PI,Math.PI)]}[t];
+  const p=spawnPoints[t]||{b:[.2,.25,0],r:[.8,.25,Math.PI],y:[.2,.75,0],g:[.8,.75,Math.PI],ki:[.4,.5,0],ki2:[.6,.5,Math.PI],ki3:[.5,.35,0],ki4:[.5,.65,Math.PI]}[t];
   return {team:t,x:W*p[0],y:H*p[1],a:p[2],hp:BODY.hp,stamina:BODY.stamina,
     sprinting:false,cool:0,stun:0,block:false,blockCd:0,blockTime:0,score:0,
     target:null,targetClock:0,noProgress:0,lastCombat:0,lastDist:999,moveMode:'idle',atk:0,
@@ -295,7 +300,7 @@ function pickTarget(me,force=false){
 }
 function creditMove(q,amount=1){q.actions.goodMoves+=amount;q.score+=amount*.28;q.noProgress=0}
 function reward(q,value,label){
-  if(q.team!=='ki'||q.episodeDone||!model)return;
+  const model=learnerModels[q.team];if(!model||q.episodeDone)return;
   q.pendingReward+=value;q.episodeReward+=value;model.totalReward+=value;
   if(label){eventLabel=(value>=0?'+':'')+value.toFixed(1)+' '+label;eventAt=performance.now()}
 }
@@ -334,14 +339,14 @@ function strike(me,chosen=null){
   if(blocked){
     me.stun=BODY.stun;en.score+=1.5;en.actions.blocks++;creditMove(en,.8);
     reward(en,.8,'geblockt');reward(me,-.25,'Angriff geblockt');
-    if(en.team==='ki')model.blocks++;
+    if(isLearner(en.team))learnerModels[en.team].blocks++;
   }else if(behind||Math.random()>=BODY.dodgeChance){
     const damage=behind?en.hp:Math.min(en.hp,rnd(12,18));
     en.hp=Math.max(0,en.hp-damage);me.actions.hits++;me.score+=behind?8:1;creditMove(me,behind?3:1);
     if(behind)me.actions.backstabs++;if(me.sprinting)me.actions.sprintHits++;
     reward(me,damage/15,behind?'Rückentreffer':'Treffer');reward(en,-damage/18,'getroffen');
-    if(me.team==='ki')model.hits++;
-    if(en.hp<=0){reward(me,2,'Gegner besiegt');reward(en,-5,'besiegt');if(en.team==='ki')model.deaths++}
+    if(isLearner(me.team))learnerModels[me.team].hits++;
+    if(en.hp<=0){reward(me,2,'Gegner besiegt');reward(en,-5,'besiegt');if(isLearner(en.team))learnerModels[en.team].deaths++}
   }else{
     en.actions.dodges++;creditMove(en,.65);reward(en,.15,'ausgewichen');reward(me,-.04,'verfehlt');
   }
@@ -398,11 +403,13 @@ function observe(me){
   return Float32Array.from(s);
 }
 function finishTransition(me,done=false){
+  const model=learnerModels[me.team];
   if(!me.previousState)return;
   model.remember(me.previousState,me.heldAction,me.pendingReward,observe(me),done,clamp(.18-me.decisionLeft,1/60,.18));
   me.pendingReward=0;me.previousState=null;
 }
 function endEpisode(me,outcome){
+  const model=learnerModels[me.team];
   if(me.episodeDone)return;
   if(outcome==='win')reward(me,5,'Sieg');
   if(outcome==='timeout')reward(me,-.5,'Runde beendet');
@@ -410,6 +417,7 @@ function endEpisode(me,outcome){
   pendingRounds.push({episode:model.episodes,generation,reward:me.episodeReward,outcome,steps:me.episodeSteps});
 }
 function updateLearner(me,dt){
+  const model=learnerModels[me.team];
   if(me.hp<=0){if(!me.episodeDone)endEpisode(me,'loss');return}
   timers(me,dt);me.decisionLeft-=dt;
   if(me.decisionLeft<=0){
@@ -444,49 +452,28 @@ function learnExisting(q,won){
   q.brain.retreat=n(q.brain.retreat+lr*reward*a.escapes*.06+rnd(-e*.35,e*.35));
 }
 function resetPositions(){
-  const old=bots,learner=old.find(q=>q.team==='ki');
-  // Manual repositioning is not a win, loss, or reward.
-  if(learner&&!learner.episodeDone)finishTransition(learner,true);
-  bots=TEAMS.map(t=>spawn(t,old.find(q=>q.team===t).brain));
-  if(learnerEnabled){
-    const q=spawn('ki');if(learner&&!learner.episodeDone){
-      q.episodeReward=learner.episodeReward;q.episodeSteps=learner.episodeSteps;
-    }
-    bots.push(q);
-  }
-  roundTime=0;accumulator=0;mutation++;ui();
+ const old=bots;for(const q of old)if(isLearner(q.team)&&learnerModels[q.team]&&!q.episodeDone)finishTransition(q,true);
+ bots=TEAMS.map(t=>spawn(t,old.find(q=>q.team===t)?.brain));
+ for(const t of Object.keys(learnerModels))if(learnerInfo[t].active)bots.push(spawn(t));
+ roundTime=0;accumulator=0;mutation++;ui();
 }
 function nextRound(timeout=false){
-  const alive=bots.filter(q=>q.hp>0);if(!timeout&&alive.length>1)return;
-  const winner=alive.length===1?alive[0]:null;if(winner)wins[winner.team]++;
-  const learner=bots.find(q=>q.team==='ki');
-  if(learner&&!learner.episodeDone)endEpisode(learner,winner===learner?'win':timeout?'timeout':'loss');
-  for(const q of bots)if(q.team!=='ki')learnExisting(q,q===winner);
-  const old=bots;generation++;roundTime=0;
-  bots=TEAMS.map(t=>spawn(t,old.find(q=>q.team===t).brain));
-  if(learnerEnabled)bots.push(spawn('ki'));
-  mutation++;
+ const alive=bots.filter(q=>q.hp>0);if(!timeout&&alive.length>1)return;
+ const winner=alive.length===1?alive[0]:null;if(winner)wins[winner.team]=(wins[winner.team]||0)+1;
+ for(const q of bots)if(isLearner(q.team)){if(!q.episodeDone)endEpisode(q,winner===q?'win':timeout?'timeout':'loss')}else learnExisting(q,q===winner);
+ generation++;resetPositions();
 }
 function tick(dt=1/60){
-  roundTime+=dt;
-  // Rotate processing order so no fighter gets a permanent first-strike advantage.
-  const first=Math.floor(roundTime/dt)%bots.length;
-  for(let i=0;i<bots.length;i++){
-    const q=bots[(first+i)%bots.length];
-    if(q.team==='ki')updateLearner(q,dt);else updateExisting(q,dt);
-  }
-  const learner=bots.find(q=>q.team==='ki');
-  if(learner&&learner.hp<=0&&!learner.episodeDone)endEpisode(learner,'loss');
-  if(bots.filter(q=>q.hp>0).length<=1)nextRound();
-  else if(roundTime>=90)nextRound(true);
-  mutation++;
+ roundTime+=dt;const first=Math.floor(roundTime/dt)%bots.length;
+ for(let i=0;i<bots.length;i++){const q=bots[(first+i)%bots.length];if(isLearner(q.team))updateLearner(q,dt);else updateExisting(q,dt)}
+ if(bots.filter(q=>q.hp>0).length<=1)nextRound();else if(roundTime>=90)nextRound(true);mutation++;
 }
 function placeKI(){
-  if(!ready||conflict)return {placed:false,error:'Lernstand nicht geladen'};
-  if(learnerEnabled)return {placed:false,reason:'bereits platziert'};
-  model=new DQN();learnerEnabled=true;bots.push(spawn('ki'));mutation++;
-  $('#learnerLine').hidden=false;$('#learningNote').hidden=false;resize();ui();save(true);
-  return {placed:true,team:'ki'};
+ if(!ready||conflict)return {placed:false};
+ const t=['ki','ki2','ki3','ki4'].find(t=>!learnerModels[t]);if(!t)return {placed:false};
+ learnerModels[t]=new DQN();learnerInfo[t]={name:'KI '+(['ki','ki2','ki3','ki4'].indexOf(t)+1),active:true};wins[t]=0;
+ COLORS[t]={ki:'#b794ff',ki2:'#53d8df',ki3:'#ff91be',ki4:'#f4a85a'}[t];NAMES[t]=learnerInfo[t].name;
+ model=learnerModels.ki||learnerModels[t];learnerEnabled=true;bots.push(spawn(t));mutation++;ui();renderManager();renderSpawns();save(true);return {placed:true,team:t};
 }
 
 function draw(q){
@@ -518,51 +505,60 @@ function draw(q){
   ctx.fillStyle=color;ctx.fillRect(q.x-28,q.y-50,56*q.hp/100,4);
   ctx.fillStyle='#263248';ctx.fillRect(q.x-29,q.y-43,58,5);
   ctx.fillStyle='#f1c84b';ctx.fillRect(q.x-28,q.y-42,56*q.stamina/100,3);
-  if(q.team==='ki'){ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText('KI',q.x,q.y+52)}
+  if(isLearner(q.team)){ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText(learnerInfo[q.team]?.name||'KI',q.x,q.y+52)}
 }
 function ui(){
   for(const t of TEAMS)$('#'+t+'S').textContent='Siege '+wins[t];
   $('#stats').textContent='Generation '+generation+' · '+syncMessage;
   $('#learnerLine').hidden=!learnerEnabled;$('#learningNote').hidden=!learnerEnabled;
-  $('#placeKI').disabled=!ready||learnerEnabled||conflict;$('#placeKI').textContent=learnerEnabled?'KI platziert':'Place KI';
+  $('#placeKI').disabled=!ready||Object.keys(learnerModels).length>=4||conflict;$('#placeKI').textContent='+ KI';
   $('#pause').disabled=!ready||conflict;$('#reset').disabled=!ready||conflict;$('#speed').disabled=!ready||conflict;
   $('#pause').textContent=paused?'Weiter':'Pause';
   if(model){
-    $('#learnerNumbers').textContent='Lernschritte '+model.decisions.toLocaleString('de-DE')+' · Siege '+wins.ki;
+    $('#learnerNumbers').textContent=Object.keys(learnerModels).length+' KIs · '+Object.values(learnerModels).reduce((a,m)=>a+m.decisions,0).toLocaleString('de-DE')+' Schritte';
     $('#learnDetail').textContent='Erfahrungen '+model.replay.length+' · Ausprobieren '+Math.round(model.epsilon()*100)+' %';
     $('#rewardEvent').textContent=eventLabel;
   }
 }
 function frame(time){
   const real=clamp((time-last)/1000,0,.08);last=time;
-  if(ready&&!paused&&!conflict&&!document.hidden){
+  if(ready&&!paused&&!conflict&&!document.hidden&&activeTab==='fight'){
     accumulator=Math.min(2,accumulator+real*speed);
     const deadline=performance.now()+10;let steps=0;
     while(accumulator>=1/60&&steps<1000&&performance.now()<deadline){tick();accumulator-=1/60;steps++}
   }else accumulator=0;
   ctx.clearRect(0,0,W,H);ctx.strokeStyle='#344154';ctx.lineWidth=2;ctx.strokeRect(16,16,W-32,H-32);bots.forEach(draw);
-  if(time-uiAt>250){uiAt=time;ui()}
+  if(time-uiAt>250){uiAt=time;ui();if(activeTab==='spawns')drawSpawnEditor()}
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 
 function checkpoint(){
-  return {format:'FightLab-DQN',version:2,generation,wins:{...wins},learnerEnabled,speed,roundTime,
+  return {format:'FightLab-DQN',version:3,generation,wins:{...wins},learnerEnabled,speed,roundTime,
     arena:[W,H],bots:bots.map(q=>({...q,brain:{...q.brain},actions:{...q.actions}})),model:model?model.dump():null,
-    pendingRounds:pendingRounds.slice(30)};
+    pendingRounds:[],models:Object.fromEntries(Object.entries(learnerModels).map(([t,m])=>[t,m.dump()])),learnerInfo,spawnPoints};
+}
+function validateCheckpoint(s){
+ if(s?.version===2)return validateLegacy(s);
+ if(!s||s.format!=='FightLab-DQN'||s.version!==3||!s.models||!s.learnerInfo||!Array.isArray(s.bots)||!s.spawnPoints)return false;
+ const keys=Object.keys(s.models);if(keys.length>4||keys.some(t=>!isLearner(t)))return false;
+ const ids=s.bots.map(q=>q.team);if(new Set(ids).size!==ids.length||ids.some(t=>!TEAMS.includes(t)&&!keys.includes(t)))return false;
+ for(const [t,p] of Object.entries(s.spawnPoints))if(![...TEAMS,...keys].includes(t)||!Array.isArray(p)||p.length!==3||p.some(x=>!Number.isFinite(x))||p[0]<.05||p[0]>.95||p[1]<.05||p[1]>.95)return false;
+ for(const t of keys){const info=s.learnerInfo[t];if(!info||typeof info.name!=='string'||info.name.length>24||typeof info.active!=='boolean'||!Number.isSafeInteger(s.wins[t])||s.wins[t]<0||ids.includes(t)!==info.active)return false;
+ const bot=s.bots.find(q=>q.team===t)||{...s.bots[0],team:t};
+ if(!validateLegacy({...s,version:2,learnerEnabled:true,bots:[...s.bots.filter(q=>TEAMS.includes(q.team)),{...bot,team:'ki'}],model:s.models[t],wins:{...s.wins,ki:s.wins[t]},pendingRounds:[]}))return false;}
+ return validateLegacy({...s,version:2,learnerEnabled:false,bots:s.bots.filter(q=>TEAMS.includes(q.team)),model:null,wins:{...s.wins,ki:0},pendingRounds:[]});
 }
 function restore(s){
-  if(s.format!=='FightLab-DQN'||s.version!==2)throw Error('Unbekannter Lernstand');
-  const restoredModel=s.model?new DQN(s.model):null;
-  generation=s.generation;wins={...s.wins};learnerEnabled=s.learnerEnabled;roundTime=s.roundTime;model=restoredModel;
-  pendingRounds=(s.pendingRounds||[]).map(r=>({...r}));
-  speed=s.speed;$('#speed').value=String(speed);
-  bots=s.bots.map(data=>{
-    const q={...spawn(data.team,data.brain),...data};
-    q.x=clamp(data.x/s.arena[0]*W,26,W-26);q.y=clamp(data.y/s.arena[1]*H,26,H-26);return q;
-  });
-  if(learnerEnabled){$('#learnerLine').hidden=false;$('#learningNote').hidden=false}
-  eventLabel=model?'Lernstand fortgesetzt':'Noch keine Erfahrung';resize();
+ if(!validateCheckpoint(s))throw Error('Ungültiger Lernstand');
+ learnerModels={};learnerInfo=s.version===3?s.learnerInfo:{};spawnPoints=s.spawnPoints||{};
+ const saved=s.version===3?s.models:(s.model?{ki:s.model}:{});
+ for(const [t,data] of Object.entries(saved)){learnerModels[t]=new DQN(data);learnerModels[t].replay=learnerModels[t].replay.slice(-400);learnerModels[t].replayCursor%=400;
+ learnerInfo[t]||={name:'KI 1',active:true};COLORS[t]={ki:'#b794ff',ki2:'#53d8df',ki3:'#ff91be',ki4:'#f4a85a'}[t];NAMES[t]=learnerInfo[t].name;}
+ generation=s.generation;wins={...s.wins};learnerEnabled=Object.keys(saved).length>0;roundTime=s.roundTime;model=learnerModels.ki||Object.values(learnerModels)[0]||null;pendingRounds=[];
+ speed=s.speed;$('#speed').value=String(speed);
+ bots=s.bots.map(data=>({...spawn(data.team,data.brain),...data,x:clamp(data.x/s.arena[0]*W,26,W-26),y:clamp(data.y/s.arena[1]*H,26,H-26)}));
+ eventLabel='Lernstand fortgesetzt';resize();renderManager();renderSpawns();
 }
 const STORAGE_KEY='fight-lab-local-v1';
 function stored(){const raw=localStorage.getItem(STORAGE_KEY);return raw?JSON.parse(raw):null;}
@@ -642,6 +638,53 @@ if(modelContext&&modelContext.registerTool){
   ])try{Promise.resolve(modelContext.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{})}catch{}
   addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
 }
+function switchTab(tab){
+ activeTab=tab;$('#arena').hidden=tab!=='fight';$('#top').hidden=tab!=='fight';$('#bottom').hidden=tab!=='fight';
+ // Existing display styles must not override the native hidden attribute.
+ $('#arena').style.display=tab==='fight'?'':'none';$('#top').style.display=tab==='fight'?'':'none';$('#bottom').style.display=tab==='fight'?'':'none';
+ $('#manager').hidden=tab!=='manager';$('#spawns').hidden=tab!=='spawns';
+ document.querySelectorAll('#tabs button').forEach(b=>{b.classList.toggle('selected',b.dataset.tab===tab);b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false')});
+ if(tab==='manager')renderManager();if(tab==='spawns'){renderSpawns();drawSpawnEditor()}if(tab==='fight')resize();save(true);
+}
+function renderManager(){
+ const host=$('#kiCards');host.replaceChildren();
+ if(!Object.keys(learnerModels).length){const empty=document.createElement('p');empty.textContent='Erstelle deine erste lernende KI.';host.append(empty)}
+ for(const [t,m] of Object.entries(learnerModels)){
+ const card=document.createElement('article');card.className='kiCard';
+ const heading=document.createElement('div');heading.className='cardHeading';const dot=document.createElement('span');dot.className='dot';dot.style.background=COLORS[t];
+ const name=document.createElement('input');name.value=learnerInfo[t].name;name.maxLength=24;name.setAttribute('aria-label','Name '+learnerInfo[t].name);
+ name.onchange=()=>{learnerInfo[t].name=name.value.trim()||'KI';NAMES[t]=learnerInfo[t].name;mutation++;save(true)};heading.append(dot,name);
+ const stats=document.createElement('div');stats.className='cardStats';
+ for(const [label,value]of [['Schritte',m.decisions],['Siege',wins[t]||0],['Runden',m.episodes]]){const item=document.createElement('span'),number=document.createElement('b');number.textContent=value.toLocaleString('de-DE');item.append(number,label);stats.append(item)}
+ const actions=document.createElement('div');actions.className='cardActions';
+ const toggle=document.createElement('button');toggle.textContent=learnerInfo[t].active?'Aus Arena nehmen':'Platzieren';toggle.onclick=()=>{learnerInfo[t].active=!learnerInfo[t].active;resetPositions();mutation++;save(true);renderManager()};
+ const exp=document.createElement('button');exp.textContent='Export';exp.onclick=()=>{const state=checkpoint();state.models={[t]:state.models[t]};state.learnerInfo={[t]:state.learnerInfo[t]};state.bots=state.bots.filter(q=>!isLearner(q.team)||q.team===t);state.spawnPoints=Object.fromEntries(Object.entries(state.spawnPoints).filter(([id])=>!isLearner(id)||id===t));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({format:'FightLab-Backup',version:1,state})],{type:'application/json'}));a.download='FightLab-'+t+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),30000)};
+ const del=document.createElement('button');del.textContent='Entfernen';del.onclick=()=>{if(!confirm(learnerInfo[t].name+' entfernen? Sichere vorher den Lernstand über Export.'))return;delete learnerModels[t];delete learnerInfo[t];delete spawnPoints[t];delete wins[t];model=learnerModels.ki||Object.values(learnerModels)[0]||null;learnerEnabled=!!model;resetPositions();mutation++;save(true);renderManager()};
+ actions.append(toggle,exp,del);card.append(heading,stats,actions);host.append(card);
+ }
+ $('#addManaged').disabled=Object.keys(learnerModels).length>=4||!ready;
+}
+function spawnTeams(){return [...TEAMS,...Object.keys(learnerModels).filter(t=>learnerInfo[t].active)]}
+function pointFor(t){return spawnPoints[t]||{b:[.2,.25,0],r:[.8,.25,Math.PI],y:[.2,.75,0],g:[.8,.75,Math.PI],ki:[.4,.5,0],ki2:[.6,.5,Math.PI],ki3:[.5,.35,0],ki4:[.5,.65,Math.PI]}[t]}
+function renderSpawns(){const host=$('#spawnList');host.replaceChildren();for(const t of spawnTeams()){const item=document.createElement('span');item.style.color=COLORS[t];item.textContent=learnerInfo[t]?.name||NAMES[t];host.append(item)}}
+function drawSpawnEditor(){
+ const canvas=$('#spawnCanvas'),box=canvas.getBoundingClientRect();if(!box.width||!box.height)return;
+ const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(box.width*ratio);canvas.height=Math.round(box.height*ratio);
+ const ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,box.width,box.height);
+ ctx.strokeStyle='#243750';ctx.lineWidth=1;for(let i=1;i<5;i++){ctx.beginPath();ctx.moveTo(box.width*i/5,0);ctx.lineTo(box.width*i/5,box.height);ctx.stroke();ctx.beginPath();ctx.moveTo(0,box.height*i/5);ctx.lineTo(box.width,box.height*i/5);ctx.stroke()}
+ for(const t of spawnTeams()){const p=pointFor(t),x=p[0]*box.width,y=p[1]*box.height;ctx.fillStyle=COLORS[t];ctx.beginPath();ctx.arc(x,y,t===dragSpawn?20:16,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#e2eaff';ctx.lineWidth=2;ctx.stroke();ctx.font='600 11px system-ui';ctx.textAlign='center';ctx.fillStyle='#e2eaff';ctx.fillText(learnerInfo[t]?.name||NAMES[t],x,Math.min(box.height-7,y+32));}
+}
+function setupPanels(){
+ $('#backupActions').append($('#backup'),$('#restoreBackup'));
+ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+ $('#addManaged').onclick=placeKI;$('#applySpawns').onclick=()=>{resetPositions();save(true);switchTab('fight')};
+ const canvas=$('#spawnCanvas');
+ canvas.onpointerdown=e=>{const b=canvas.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let nearest=null,d=38;for(const t of spawnTeams()){const p=pointFor(t),distance=Math.hypot(x-p[0]*b.width,y-p[1]*b.height);if(distance<d){d=distance;nearest=t}}if(!nearest)return;dragSpawn=nearest;canvas.setPointerCapture(e.pointerId);drawSpawnEditor()};
+ canvas.onpointermove=e=>{if(!dragSpawn)return;const b=canvas.getBoundingClientRect(),p=pointFor(dragSpawn);spawnPoints[dragSpawn]=[clamp((e.clientX-b.left)/b.width,.05,.95),clamp((e.clientY-b.top)/b.height,.05,.95),p[2]];mutation++;drawSpawnEditor()};
+ const finish=()=>{if(dragSpawn){dragSpawn=null;save(true);drawSpawnEditor()}};canvas.onpointerup=finish;canvas.onpointercancel=finish;
+}
+
+setupPanels();
 load();
 </script>
 </body>
