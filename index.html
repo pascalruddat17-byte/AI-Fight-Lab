@@ -356,9 +356,9 @@ function strike(me,chosen=null){
     me.stun=BODY.stun;en.score+=1.5;en.actions.blocks++;creditMove(en,.8);
     reward(en,.8,'geblockt','block');reward(me,-.25,'Angriff geblockt','blocked');
     if(isLearner(en.team))learnerModels[en.team].blocks++;
-  }else if(behind||Math.random()>=BODY.dodgeChance){
+  }else if(behind||isZombie(en.team)||Math.random()>=BODY.dodgeChance){
     const damage=isZombie(me.team)?Math.min(en.hp,9):(behind?en.hp:Math.min(en.hp,rnd(12,18)));
-    en.hp=Math.max(0,en.hp-damage);me.actions.hits++;me.score+=behind?8:1;creditMove(me,behind?3:1);
+    en.hp=Math.max(0,en.hp-damage);if(isZombie(en.team)&&en.hp>0)en.stun=Math.max(en.stun,BODY.stun);me.actions.hits++;me.score+=behind?8:1;creditMove(me,behind?3:1);
     if(behind)me.actions.backstabs++;if(me.sprinting)me.actions.sprintHits++;
     reward(me,damage/15,behind?'Rückentreffer':'Treffer','hit');reward(en,-damage/18,'getroffen','damage');
     if(isLearner(me.team))learnerModels[me.team].hits++;
@@ -490,7 +490,8 @@ function updateZombie(me,dt){
  const enemies=bots.filter(q=>q.hp>0&&!isZombie(q.team));
  const target=enemies.sort((a,b)=>Math.hypot(a.x-me.x,a.y-me.y)-Math.hypot(b.x-me.x,b.y-me.y))[0];
  if(!target)return;const dx=target.x-me.x,dy=target.y-me.y,d=Math.hypot(dx,dy);
- me.a=Math.atan2(dy,dx);if(d>55)move(me,dx,dy,false,dt*.7);if(d<70)strike(me,target);
+ const desired=Math.atan2(dy,dx);me.a+=clamp(angle(me.a,desired),-1.1*dt,1.1*dt);
+ if(d>55&&Math.cos(angle(me.a,desired))>.2)move(me,Math.cos(me.a),Math.sin(me.a),false,dt*.7);if(d<70)strike(me,target);
 }
 function tick(dt=1/60){
  if(!bots.length||(!continuous()&&bots.length<2))return;roundTime+=dt;const endless=continuous();
@@ -524,7 +525,7 @@ function placeKI(){
 
 function draw(q){
   if(q.hp<=0)return;
-  if(isZombie(q.team)){ctx.save();ctx.translate(q.x,q.y);ctx.rotate(q.a);ctx.fillStyle='#46513c';ctx.fillRect(-13,-18,26,36);ctx.fillStyle='#95c873';ctx.beginPath();ctx.arc(13,0,14,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#95c873';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(33,-14);ctx.moveTo(0,18);ctx.lineTo(33,14);ctx.stroke();ctx.fillStyle='#263220';ctx.fillRect(17,-8,4,4);ctx.fillRect(17,4,4,4);ctx.restore();ctx.fillStyle='#334137';ctx.fillRect(q.x-22,q.y-34,44,4);ctx.fillStyle='#95c873';ctx.fillRect(q.x-22,q.y-34,44*q.hp/100,4);return;}
+  if(isZombie(q.team)){ctx.save();ctx.translate(q.x,q.y);ctx.rotate(q.a);ctx.fillStyle='#46513c';ctx.fillRect(-13,-18,26,36);ctx.fillStyle='#95c873';ctx.beginPath();ctx.arc(13,0,14,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#95c873';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(33,-14);ctx.moveTo(0,18);ctx.lineTo(33,14);ctx.stroke();ctx.fillStyle='#263220';ctx.fillRect(17,-8,4,4);ctx.fillRect(17,4,4,4);ctx.restore();ctx.fillStyle='#334137';ctx.fillRect(q.x-22,q.y-34,44,4);ctx.fillStyle='#95c873';ctx.fillRect(q.x-22,q.y-34,44*q.hp/100,4);if(q.stun>0){ctx.fillStyle='#ffd54a';ctx.font='bold 14px system-ui';ctx.textAlign='center';ctx.fillText('★ ★ ★',q.x,q.y-43)}return;}
   const color=COLORS[q.team];
   ctx.save();ctx.globalAlpha=q.stun>0?.48:1;ctx.translate(q.x,q.y);ctx.rotate(q.a);
   ctx.fillStyle=color;ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=5;ctx.fillRect(-16,-22,31,44);
