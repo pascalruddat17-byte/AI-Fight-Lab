@@ -33,7 +33,7 @@ button{cursor:pointer}button:disabled{cursor:default;opacity:.56}button:focus-vi
 @media(max-height:430px){#top{padding:4px 10px;gap:2px 15px}.io{min-height:25px;padding:3px 5px}#learnerLine{padding-top:2px}#bottom{min-height:58px;padding-top:7px;padding-bottom:7px}#learningNote{bottom:15px}}
 
 .appHeader{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 10px;background:#0d1423}.appHeader small,.panel>small,.sectionTitle small{font-size:10px;letter-spacing:2px;color:#8c9ab8}h1{font-size:25px;margin:4px 0;letter-spacing:-1px}h1 span{font-size:10px;color:#8feecc;margin-left:10px}.localBadge{font-size:10px;padding:8px 10px;background:#1a2b32;color:#90dec8;border-radius:20px}#top{background:#0d1423;border:0;display:flex;flex-wrap:wrap;justify-content:space-around;gap:8px;padding:8px 16px 12px}.team{font-size:11px;gap:5px}.team .io{display:none}.teamRight{font-size:10px;color:#90a0bc}#learnerLine{border:0;padding:0;font-size:11px}#learnerNumbers{font-size:11px}#stats{width:100%;font-size:10px;color:#71839e}.panel{flex:1;overflow:auto;min-height:0;padding:22px 18px;background:#0d1423}.panel[hidden]{display:none}h2{font-size:24px;letter-spacing:-.7px;margin:6px 0 18px}.panel p{color:#8e9db7;font-size:13px;line-height:1.6}.sectionTitle{display:flex;justify-content:space-between;align-items:center}.kiCard{background:#172238;border:1px solid #26364e;border-radius:18px;padding:16px;margin-bottom:12px}.cardHeading{display:flex;align-items:center;gap:10px}.dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}.kiCard input{background:transparent;color:white;font:700 16px system-ui;border:0;min-width:0;width:100%;padding:8px 0}.cardStats{display:flex;gap:22px;margin:12px 0;color:#92a4c3;font-size:12px}.cardStats b{display:block;color:#eaf1ff;font-size:20px}.cardActions{display:flex;gap:8px}.cardActions button{font-size:12px;padding:10px;flex:1}.backupBox{padding:16px;background:#141e30;border-radius:16px;margin-top:22px}.backupBox h3{font-size:15px;margin:0}.backupBox button{font-size:12px}.backupBox p{margin:8px 0 14px}#backupActions{display:flex;gap:8px}#backupActions button{flex:1}#bottom{min-height:68px;background:#0d1423;border:0;gap:8px;padding:10px 16px}#bottom button{font-size:12px;padding:10px 12px}#reset{background:#26364e;font-size:0!important}#reset:after{content:'↻';font-size:19px}#tabs{display:flex;background:#101b2e;border-top:1px solid #26364e;padding:8px 16px max(8px,env(safe-area-inset-bottom));gap:8px}#tabs button{flex:1;background:transparent;color:#8396b8;font-size:20px;padding:6px;min-height:48px;border-radius:14px}#tabs button span{display:block;font-size:10px;margin-top:3px}#tabs button.selected{color:#bca5ff;background:#252441}#arena{margin:0 10px;border:1px solid #26364e;border-radius:22px;background:radial-gradient(ellipse,#1b2b42,#101b2d)}#learningNote{left:16px;bottom:12px;font-size:10px}#spawnCanvas{width:100%;height:310px;display:block;background:#172238;border:1px solid #2b3c55;border-radius:20px;touch-action:none}#spawnList{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}#spawnList span{font-size:11px;background:#172238;border-radius:20px;padding:8px 10px}#applySpawns{width:100%}@media(min-width:700px){.panel{padding:24px max(24px,calc((100vw - 650px)/2))}.appHeader{padding:18px 28px}#tabs{justify-content:center}#tabs button{max-width:180px}#spawnCanvas{height:380px}}@media(max-height:500px){.appHeader{padding:5px 16px}.appHeader small{display:none}h1{font-size:18px}#top{padding:2px 16px}#tabs{padding:3px}#tabs button{min-height:36px}#bottom{min-height:45px;padding:4px}#learningNote{display:none}}
-</style>
+#spawnList{display:block}.spawnRow{display:flex;align-items:center;justify-content:space-between;margin:8px 0;padding:8px 10px;background:#172238;border-radius:12px}.spawnRow span{background:none!important;padding:0!important}.spawnRow button{font-size:11px;min-height:38px;padding:8px 12px}#spawnHint{font-size:12px;color:#a798d3}</style>
 </head>
 <body>
 <header class="appHeader"><div><small>TRAINING ARENA</small><h1>Fight Lab<span>●</span></h1></div><span class="localBadge">Auf deinem Gerät</span></header><div id="top">
@@ -50,7 +50,7 @@ button{cursor:pointer}button:disabled{cursor:default;opacity:.56}button:focus-vi
   <div id="learningNote" hidden><div id="rewardEvent">Noch keine Erfahrung</div><div id="learnDetail">Sie probiert ihre Aktionen aus.</div></div>
   <div id="gate"><div id="gateBox"><p id="gateText">Lernstand wird geladen…</p><button id="retry" hidden>Erneut versuchen</button></div></div>
 </div>
-<section id="manager" class="panel" hidden><div class="sectionTitle"><div><small>DEINE KÄMPFER</small><h2>KI-Verwaltung</h2></div><button id="addManaged" class="primary">+ KI</button></div><div id="kiCards"></div><div class="backupBox"><h3>Lernstand sichern</h3><p>Alle KIs als Datei mitnehmen.</p><div id="backupActions"></div></div></section><section id="spawns" class="panel" hidden><small>START DER NÄCHSTEN RUNDE</small><h2>Startpositionen</h2><p>Ziehe die farbigen Punkte an ihre Startplätze.</p><canvas id="spawnCanvas" aria-label="Startpositionen verschieben"></canvas><div id="spawnList"></div><button class="primary" id="applySpawns">Positionen anwenden</button></section><div id="bottom">
+<section id="manager" class="panel" hidden><div class="sectionTitle"><div><small>DEINE KÄMPFER</small><h2>KI-Verwaltung</h2></div><button id="addManaged" class="primary">+ KI</button></div><div id="kiCards"></div><div class="backupBox"><h3>Lernstand sichern</h3><p>Alle KIs als Datei mitnehmen.</p><div id="backupActions"></div></div></section><section id="spawns" class="panel" hidden><small>START DER NÄCHSTEN RUNDE</small><h2>Startpositionen</h2><p>Ziehe die farbigen Punkte an ihre Startplätze.</p><p id="spawnHint"></p><canvas id="spawnCanvas" aria-label="Startpositionen verschieben"></canvas><div id="spawnList"></div><button class="primary" id="applySpawns">Positionen anwenden</button></section><div id="bottom">
   <select id="speed" aria-label="Trainingsgeschwindigkeit">
     <option value="1">×1</option><option value="2">×2</option><option value="4">×4</option><option value="8">×8</option><option value="20">×20</option><option value="50">×50</option><option value="100">×100</option><option value="200">×200</option><option value="500">×500</option><option value="1000">×1000</option>
   </select>
@@ -150,6 +150,7 @@ let learnerEnabled=false,model=null,bots=[],wins={b:0,r:0,y:0,g:0,ki:0};
 let ready=false,paused=false,last=performance.now(),accumulator=0,uiAt=0;
 let pendingRounds=[],revision=0,mutation=0,savedMutation=-1,inflight=null,lastSaveAt=0;
 let conflict=false,syncMessage='Lernstand wird geladen…',saveRetry=null;
+let disabledSpawns=[],legacyBrains={};
 let learnerModels={},learnerInfo={},spawnPoints={},activeTab='fight',dragSpawn=null;
 const isLearner=t=>/^ki(?:[2-4])?$/.test(t);
 let eventLabel='Noch keine Erfahrung',eventAt=0;
@@ -189,6 +190,7 @@ class DQN {
       this.target.set(this.params);
     }
   }
+  initPriorities(){this.priorities=this.replay.map(e=>Math.max(.05,Math.abs(e[2])/4+.05));}
   random() {
     this.rng=(this.rng+0x6d2b79f5)>>>0;
     let t=this.rng;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);
@@ -211,30 +213,38 @@ class DQN {
   best(q) {
     let a=0;for(let i=1;i<q.length;i++)if(q[i]>q[a])a=i;return a;
   }
-  epsilon(){return Math.max(.08,Math.exp(-this.decisions/20000))}
+  epsilon(){return Math.max(.06,Math.exp(-this.decisions/6500))}
   choose(s) {
     const a=this.random()<this.epsilon()?Math.floor(this.random()*this.actions):this.best(this.forward(s).q);
     this.decisions++;this.actionCounts[a]++;return a;
   }
   remember(s,a,r,s2,done,elapsed) {
     const e=[quant(s),a,r,quant(s2),done,elapsed];
-    if(this.replay.length<400)this.replay.push(e);
-    else {this.replay[this.replayCursor]=e;this.replayCursor=(this.replayCursor+1)%400}
+    if(!this.priorities||this.priorities.length!==this.replay.length)this.initPriorities();
+    const priority=Math.max(1,...this.priorities);
+    if(this.replay.length<400){this.replay.push(e);this.priorities.push(priority);}
+    else {this.replay[this.replayCursor]=e;this.priorities[this.replayCursor]=priority;this.replayCursor=(this.replayCursor+1)%400}
     // Rewards train the network through gradients, not hand-written personality adjustments.
-    if(this.replay.length>=32&&(this.decisions%4===0||done))this.train();
+    if(this.replay.length>=24&&(this.decisions%2===0||done))this.train();
   }
-  train(batchSize=8) {
+  train(batchSize=12) {
+    if(!this.replay.length)return;
+    if(!this.priorities||this.priorities.length!==this.replay.length)this.initPriorities();
+    const weights=this.priorities.map(p=>Math.pow(p,.6)),total=weights.reduce((a,b)=>a+b,0);
+    const beta=Math.min(1,.4+this.decisions/50000),maxWeight=Math.pow(this.replay.length*Math.min(...weights)/total,-beta);
     const grad=new Float32Array(this.size);let loss=0;
     for(let n=0;n<batchSize;n++){
-      const e=this.replay[Math.floor(this.random()*this.replay.length)];
+      let draw=this.random()*total,index=weights.length-1;for(let i=0;i<weights.length;i++){draw-=weights[i];if(draw<=0){index=i;break}}
+      const e=this.replay[index],importance=Math.pow(this.replay.length*weights[index]/total,-beta)/maxWeight;
       const s=dequant(e[0]),s2=dequant(e[3]),a=e[1];
       const online=this.forward(s);
       const bestNext=this.best(this.forward(s2).q);
-      const future=e[4]?0:Math.pow(.97,e[5]/.18)*this.forward(s2,this.target).q[bestNext];
+      const future=e[4]?0:Math.pow(.99,e[5]/.18)*this.forward(s2,this.target).q[bestNext];
       const expected=e[2]/4+future;
       const error=online.q[a]-expected;
+      this.priorities[index]=Math.min(50,Math.abs(error)+.05);
       loss+=Math.abs(error)<=1?.5*error*error:Math.abs(error)-.5;
-      const delta=clamp(error,-1,1)/batchSize;
+      const delta=importance*clamp(error,-1,1)/batchSize;
       grad[this.b2+a]+=delta;
       for(let j=0;j<this.hidden;j++){
         const outIndex=this.w2+a*this.hidden+j;
@@ -250,9 +260,9 @@ class DQN {
       const g=clamp(grad[i],-3,3);
       this.momentum[i]=.9*this.momentum[i]+.1*g;
       this.variance[i]=.999*this.variance[i]+.001*g*g;
-      this.params[i]=clamp(this.params[i]-.001*(this.momentum[i]/mCorrection)/(Math.sqrt(this.variance[i]/vCorrection)+1e-8),-12,12);
+      this.params[i]=clamp(this.params[i]-.0005*(this.momentum[i]/mCorrection)/(Math.sqrt(this.variance[i]/vCorrection)+1e-8),-12,12);
     }
-    if(this.updates%100===0)this.target.set(this.params);
+    for(let i=0;i<this.size;i++)this.target[i]+=.01*(this.params[i]-this.target[i]);
   }
   dump() {
     const d={algorithm:'Double-DQN',inputs:this.inputs,hidden:this.hidden,actions:this.actions,rng:this.rng};
@@ -405,6 +415,8 @@ function observe(me){
 function finishTransition(me,done=false){
   const model=learnerModels[me.team];
   if(!me.previousState)return;
+  const enemy=enemyByTeam(me.goalEnemy);
+  if(enemy&&Number.isFinite(me.goalDistance)){const distance=Math.hypot(enemy.x-me.x,enemy.y-me.y);reward(me,.04*clamp((me.goalDistance-distance)/BODY.range,-1,1));}
   model.remember(me.previousState,me.heldAction,me.pendingReward,observe(me),done,clamp(.18-me.decisionLeft,1/60,.18));
   me.pendingReward=0;me.previousState=null;
 }
@@ -422,6 +434,8 @@ function updateLearner(me,dt){
   timers(me,dt);me.decisionLeft-=dt;
   if(me.decisionLeft<=0){
     finishTransition(me);
+    const enemy=bots.filter(q=>q!==me&&q.hp>0).sort((a,b)=>Math.hypot(a.x-me.x,a.y-me.y)-Math.hypot(b.x-me.x,b.y-me.y))[0];
+    me.goalEnemy=enemy?.team;me.goalDistance=enemy?Math.hypot(enemy.x-me.x,enemy.y-me.y):null;
     me.previousState=Array.from(observe(me));me.heldAction=model.choose(me.previousState);
     me.decisionLeft=.18;me.episodeSteps++;reward(me,-.006);
   }
@@ -453,7 +467,8 @@ function learnExisting(q,won){
 }
 function resetPositions(){
  const old=bots;for(const q of old)if(isLearner(q.team)&&learnerModels[q.team]&&!q.episodeDone)finishTransition(q,true);
- bots=TEAMS.map(t=>spawn(t,old.find(q=>q.team===t)?.brain));
+ for(const t of TEAMS){const q=old.find(q=>q.team===t);if(q)legacyBrains[t]={...q.brain};}
+ bots=TEAMS.filter(t=>!disabledSpawns.includes(t)).map(t=>spawn(t,legacyBrains[t]));
  for(const t of Object.keys(learnerModels))if(learnerInfo[t].active)bots.push(spawn(t));
  roundTime=0;accumulator=0;mutation++;ui();
 }
@@ -464,6 +479,7 @@ function nextRound(timeout=false){
  generation++;resetPositions();
 }
 function tick(dt=1/60){
+ if(bots.length<2)return;
  roundTime+=dt;const first=Math.floor(roundTime/dt)%bots.length;
  for(let i=0;i<bots.length;i++){const q=bots[(first+i)%bots.length];if(isLearner(q.team))updateLearner(q,dt);else updateExisting(q,dt)}
  if(bots.filter(q=>q.hp>0).length<=1)nextRound();else if(roundTime>=90)nextRound(true);mutation++;
@@ -516,7 +532,7 @@ function ui(){
   $('#pause').textContent=paused?'Weiter':'Pause';
   if(model){
     $('#learnerNumbers').textContent=Object.keys(learnerModels).length+' KIs · '+Object.values(learnerModels).reduce((a,m)=>a+m.decisions,0).toLocaleString('de-DE')+' Schritte';
-    $('#learnDetail').textContent='Erfahrungen '+model.replay.length+' · Ausprobieren '+Math.round(model.epsilon()*100)+' %';
+    $('#learnDetail').textContent='Lernupdates '+model.updates+' · Erfahrungen '+model.replay.length+' · Ausprobieren '+Math.round(model.epsilon()*100)+' %';
     $('#rewardEvent').textContent=eventLabel;
   }
 }
@@ -536,21 +552,25 @@ requestAnimationFrame(frame);
 function checkpoint(){
   return {format:'FightLab-DQN',version:3,generation,wins:{...wins},learnerEnabled,speed,roundTime,
     arena:[W,H],bots:bots.map(q=>({...q,brain:{...q.brain},actions:{...q.actions}})),model:model?model.dump():null,
-    pendingRounds:[],models:Object.fromEntries(Object.entries(learnerModels).map(([t,m])=>[t,m.dump()])),learnerInfo,spawnPoints};
+    pendingRounds:[],models:Object.fromEntries(Object.entries(learnerModels).map(([t,m])=>[t,m.dump()])),learnerInfo,spawnPoints,disabledSpawns,legacyBrains};
 }
 function validateCheckpoint(s){
  if(s?.version===2)return validateLegacy(s);
  if(!s||s.format!=='FightLab-DQN'||s.version!==3||!s.models||!s.learnerInfo||!Array.isArray(s.bots)||!s.spawnPoints)return false;
  const keys=Object.keys(s.models);if(keys.length>4||keys.some(t=>!isLearner(t)))return false;
+ const disabled=s.disabledSpawns||[];if(!Array.isArray(disabled)||new Set(disabled).size!==disabled.length||disabled.some(t=>!TEAMS.includes(t)))return false;
+ const legacy=TEAMS.map(t=>s.bots.find(q=>q.team===t)||spawn(t,s.legacyBrains?.[t]));
+ if(TEAMS.some(t=>s.bots.some(q=>q.team===t)===disabled.includes(t)))return false;
  const ids=s.bots.map(q=>q.team);if(new Set(ids).size!==ids.length||ids.some(t=>!TEAMS.includes(t)&&!keys.includes(t)))return false;
  for(const [t,p] of Object.entries(s.spawnPoints))if(![...TEAMS,...keys].includes(t)||!Array.isArray(p)||p.length!==3||p.some(x=>!Number.isFinite(x))||p[0]<.05||p[0]>.95||p[1]<.05||p[1]>.95)return false;
  for(const t of keys){const info=s.learnerInfo[t];if(!info||typeof info.name!=='string'||info.name.length>24||typeof info.active!=='boolean'||!Number.isSafeInteger(s.wins[t])||s.wins[t]<0||ids.includes(t)!==info.active)return false;
- const bot=s.bots.find(q=>q.team===t)||{...s.bots[0],team:t};
- if(!validateLegacy({...s,version:2,learnerEnabled:true,bots:[...s.bots.filter(q=>TEAMS.includes(q.team)),{...bot,team:'ki'}],model:s.models[t],wins:{...s.wins,ki:s.wins[t]},pendingRounds:[]}))return false;}
- return validateLegacy({...s,version:2,learnerEnabled:false,bots:s.bots.filter(q=>TEAMS.includes(q.team)),model:null,wins:{...s.wins,ki:0},pendingRounds:[]});
+ const bot=s.bots.find(q=>q.team===t)||spawn(t);
+ if(!validateLegacy({...s,version:2,learnerEnabled:true,bots:[...legacy,{...bot,team:'ki'}],model:s.models[t],wins:{...s.wins,ki:s.wins[t]},pendingRounds:[]}))return false;}
+ return validateLegacy({...s,version:2,learnerEnabled:false,bots:legacy,model:null,wins:{...s.wins,ki:0},pendingRounds:[]});
 }
 function restore(s){
  if(!validateCheckpoint(s))throw Error('Ungültiger Lernstand');
+ disabledSpawns=s.disabledSpawns||[];legacyBrains=s.legacyBrains||{};
  learnerModels={};learnerInfo=s.version===3?s.learnerInfo:{};spawnPoints=s.spawnPoints||{};
  const saved=s.version===3?s.models:(s.model?{ki:s.model}:{});
  for(const [t,data] of Object.entries(saved)){learnerModels[t]=new DQN(data);learnerModels[t].replay=learnerModels[t].replay.slice(-400);learnerModels[t].replayCursor%=400;
@@ -664,9 +684,24 @@ function renderManager(){
  }
  $('#addManaged').disabled=Object.keys(learnerModels).length>=4||!ready;
 }
-function spawnTeams(){return [...TEAMS,...Object.keys(learnerModels).filter(t=>learnerInfo[t].active)]}
+function spawnTeams(){return [...TEAMS.filter(t=>!disabledSpawns.includes(t)),...Object.keys(learnerModels).filter(t=>learnerInfo[t].active)]}
 function pointFor(t){return spawnPoints[t]||{b:[.2,.25,0],r:[.8,.25,Math.PI],y:[.2,.75,0],g:[.8,.75,Math.PI],ki:[.4,.5,0],ki2:[.6,.5,Math.PI],ki3:[.5,.35,0],ki4:[.5,.65,Math.PI]}[t]}
-function renderSpawns(){const host=$('#spawnList');host.replaceChildren();for(const t of spawnTeams()){const item=document.createElement('span');item.style.color=COLORS[t];item.textContent=learnerInfo[t]?.name||NAMES[t];host.append(item)}}
+function toggleSpawn(t,enabled){
+ if(TEAMS.includes(t)){disabledSpawns=enabled?disabledSpawns.filter(x=>x!==t):[...new Set([...disabledSpawns,t])];}
+ else if(learnerInfo[t])learnerInfo[t].active=enabled;
+ // Learner weights and evolution remain available when only their spawn is removed.
+ resetPositions();mutation++;save(true);renderSpawns();drawSpawnEditor();
+}
+function renderSpawns(){
+ const host=$('#spawnList');host.replaceChildren();
+ for(const t of [...TEAMS,...Object.keys(learnerModels)]){
+ const row=document.createElement('div');row.className='spawnRow';const label=document.createElement('span');label.style.color=COLORS[t];label.textContent=learnerInfo[t]?.name||NAMES[t];
+ const active=TEAMS.includes(t)?!disabledSpawns.includes(t):learnerInfo[t].active;
+ const button=document.createElement('button');button.textContent=active?'Spawn löschen':'Spawn wiederherstellen';button.setAttribute('aria-label',button.textContent+' '+label.textContent);button.onclick=()=>toggleSpawn(t,!active);
+ row.append(label,button);host.append(row);
+ }
+ const hint=$('#spawnHint');if(hint)hint.textContent=spawnTeams().length<2?'Zum Kämpfen brauchst du mindestens zwei Spawns.':'Ziehe die Punkte oder entferne einzelne Spawns.';
+}
 function drawSpawnEditor(){
  const canvas=$('#spawnCanvas'),box=canvas.getBoundingClientRect();if(!box.width||!box.height)return;
  const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(box.width*ratio);canvas.height=Math.round(box.height*ratio);
